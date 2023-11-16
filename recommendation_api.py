@@ -13,7 +13,9 @@ import os
 app = FastAPI()
 
 # Load the Word2Vec model and setup environment
+# 학습시킨 모델 -(1)
 model = Word2Vec.load("E:/Dockggu/word2vec_model_v1")
+# Java 환경 설치되어 있어야 함 -(2)
 os.environ["JAVA_HOME"] = r'C:/Program Files/Java/jdk-21/bin/server'
 
 # Morphological analyzer and stopwords
@@ -21,6 +23,7 @@ okt = Okt()
 stopwords = ['의', '가', '이', '은', '들', '는', '좀', '잘', '걍', '과', '도', '를', '으로', '자', '에', '와', '한', '하다']
 
 # Load the DataFrame
+# 전처리 완료한 csv 파일 -(3)
 df = pd.read_csv('E:/Dockggu/book_data_edit.csv')
 df['title_vector'] = df['title_vector'].apply(lambda x: np.fromstring(x.strip('[]'), sep=' '))
 df['category_vector'] = df['category_vector'].apply(lambda x: np.fromstring(x.strip('[]'), sep=' '))
@@ -40,7 +43,7 @@ def recommend_books(book_title, top_n=5):
         input_description_vector = input_book['description_vector']
         fetched_author = input_book['author']
     else:
-        api_key = "ttbjjh9801132001001"
+        api_key = "" # 알라딘 API 키 -(4)
         url = f"http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey={api_key}&Query={book_title}&QueryType=Title&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101"
         response = requests.get(url)
         response_json = json.loads(response.text)
